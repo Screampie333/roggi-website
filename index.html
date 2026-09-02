@@ -601,66 +601,48 @@
 })()</script>
 <script>(function(){
   // ===== Jupiter Plugin (Solana swap) =====
-  // $ROGGI hasn't launched yet, so there's no real mint address to swap into.
-  // Paste the real token mint address below once it's live — everything else
-  // here activates automatically, no other changes needed.
-  var ROGGI_MINT = ''; // Not launched yet — paste the real $ROGGI mint address here once it's live
+  // Dynamic swap widget — lets people swap into ANY token listed on Jupiter,
+  // not locked to $ROGGI, so this never needs updating on launch.
   var SOL_MINT = 'So11111111111111111111111111111111111111112';
 
-  var swapBtn = document.getElementById('Group_30');
+  var staticRows = document.getElementById('Frame_15');
+  var pluginContainer = document.getElementById('jupiter-plugin');
+  if (staticRows) staticRows.style.display = 'none';
+  if (pluginContainer) pluginContainer.style.display = 'block';
 
-  if (!ROGGI_MINT) {
-    // Not launched yet: keep the existing static mockup card exactly as-is,
-    // just let the Swap button explain why nothing happens when clicked.
-    if (swapBtn) {
-      swapBtn.style.cursor = 'pointer';
-      swapBtn.addEventListener('click', function () {
-        alert('$ROGGI hasn\'t launched yet — check back soon!');
-      });
-    }
-  } else {
-    // Launched: swap the static mock rows for the real, live Jupiter widget.
-    var staticRows = document.getElementById('Frame_15');
-    var pluginContainer = document.getElementById('jupiter-plugin');
-    if (staticRows) staticRows.style.display = 'none';
-    if (pluginContainer) pluginContainer.style.display = 'block';
-
-    var initJupiter = function () {
-      if (!window.Jupiter || !pluginContainer) return;
-      window.Jupiter.init({
-        displayMode: 'integrated',
-        integratedTargetId: 'jupiter-plugin',
-        containerStyles: { width: '100%', height: '560px', borderRadius: '20px' },
-        formProps: {
-          initialInputMint: SOL_MINT,
-          initialOutputMint: ROGGI_MINT,
-          fixedMint: ROGGI_MINT
-        }
-      });
-      // The widget's own border isn't reachable via the theming vars/containerStyles
-      // (likely baked into an inner iframe). Crop it away: make our wrapper clip
-      // overflow, then oversize whatever Jupiter renders inside so its border falls
-      // outside the visible, rounded area.
-      pluginContainer.style.overflow = 'hidden';
-      pluginContainer.style.borderRadius = '20px';
-      var tries = 0;
-      var cropInterval = setInterval(function () {
-        tries++;
-        var iframe = pluginContainer.querySelector('iframe');
-        if (iframe) {
-          iframe.style.margin = '-6px';
-          iframe.style.width = 'calc(100% + 12px)';
-          iframe.style.height = 'calc(100% + 12px)';
-          iframe.style.border = 'none';
-          clearInterval(cropInterval);
-        } else if (tries > 40) {
-          clearInterval(cropInterval); // not an iframe — border must be coming from elsewhere
-        }
-      }, 250);
-    };
-    if (window.Jupiter) initJupiter();
-    else window.addEventListener('load', initJupiter);
-  }
+  var initJupiter = function () {
+    if (!window.Jupiter || !pluginContainer) return;
+    window.Jupiter.init({
+      displayMode: 'integrated',
+      integratedTargetId: 'jupiter-plugin',
+      containerStyles: { width: '100%', height: '560px', borderRadius: '20px' },
+      formProps: {
+        initialInputMint: SOL_MINT
+      }
+    });
+    // The widget's own border isn't reachable via the theming vars/containerStyles
+    // (likely baked into an inner iframe). Crop it away: make our wrapper clip
+    // overflow, then oversize whatever Jupiter renders inside so its border falls
+    // outside the visible, rounded area.
+    pluginContainer.style.overflow = 'hidden';
+    pluginContainer.style.borderRadius = '20px';
+    var tries = 0;
+    var cropInterval = setInterval(function () {
+      tries++;
+      var iframe = pluginContainer.querySelector('iframe');
+      if (iframe) {
+        iframe.style.margin = '-6px';
+        iframe.style.width = 'calc(100% + 12px)';
+        iframe.style.height = 'calc(100% + 12px)';
+        iframe.style.border = 'none';
+        clearInterval(cropInterval);
+      } else if (tries > 40) {
+        clearInterval(cropInterval); // not an iframe — border must be coming from elsewhere
+      }
+    }, 250);
+  };
+  if (window.Jupiter) initJupiter();
+  else window.addEventListener('load', initJupiter);
 })()</script>
 <script>(function(){
   var PART_FILES={
