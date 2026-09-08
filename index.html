@@ -278,7 +278,7 @@
       <div id="Group_39">
         <div id="Ca_copy_0">
           <span id="_2310_56329" class="pointer-events-none text"><span id="__39">0x94c7b87c137b6841a8546e2960e1ea2a00fe345b</span></span>
-          <div id="Frame_1_0">
+          <div id="Frame_1_0" class="btn-copy" data-copy-target="_2310_56329" style="cursor:pointer">
             <span id="_2310_56331" class="pointer-events-none text"><span id="__40">Copy</span></span>
           </div>
         </div>
@@ -513,6 +513,24 @@
   </div>
 </div>
 <script>(function(){var DESIGN_WIDTH=1440,el=document.getElementById('Desktop_3');function fit(){var scale=window.innerWidth/DESIGN_WIDTH;el.style.transform='scale('+scale+')';document.body.style.height=(el.offsetHeight*scale)+'px'}window.addEventListener('resize',fit);fit()})()</script>
+<script>(function(){
+  document.querySelectorAll('.btn-copy').forEach(function (btn) {
+    var label = btn.querySelector('span span') || btn.querySelector('span') || btn;
+    btn.addEventListener('click', function () {
+      var targetId = btn.getAttribute('data-copy-target');
+      var el = document.getElementById(targetId);
+      if (!el) return;
+      var text = el.textContent.trim();
+      navigator.clipboard.writeText(text).then(function () {
+        var original = label.textContent;
+        label.textContent = 'Copied!';
+        setTimeout(function () { label.textContent = original; }, 1500);
+      }).catch(function () {
+        alert('Could not copy automatically — copy manually: ' + text);
+      });
+    });
+  });
+})()</script>
 <script>(function(){
   var images=[
     {src:'assets/art%20gallery/gyomei-tanjiro%20roggi.png',caption:'Demon Slayer',col:'A',grow:1},
